@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.1 - 2026-07-29
+
+Oh! The final post-publication check caught a platform detail worth fixing immediately: Git
+normalizes checked-in text to LF, while Python's CSV writer defaulted to CRLF. That changed the
+example session's `data.csv` bytes after its manifest hash had been generated.
+
+- make every Datary CSV writer emit explicit LF line endings on every platform;
+- regenerate the example session so its checked-in evidence verifies after a fresh clone; and
+- add a byte-level regression assertion for recording CSV output.
+
 ## 0.2.0 - 2026-07-29
 
 I treated this release as a corrective audit rather than a feature polish. A hard external review

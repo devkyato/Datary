@@ -1,10 +1,10 @@
 # Datary report: noisy\-sensor\-example
 
-- Datary version: `0.2.0`
-- Recorded with Datary: `0.2.0`
+- Datary version: `0.2.1`
+- Recorded with Datary: `0.2.1`
 - Session format: `2`
-- Started: `2026-07-29T19:37:50.019613+08:00`
-- Ended: `2026-07-29T19:37:50.055197+08:00`
+- Started: `2026-07-29T21:56:32.283095+08:00`
+- Ended: `2026-07-29T21:56:32.337172+08:00`
 - Input format: `jsonl`
 - Records: 101 valid, 0 invalid
 
@@ -64,7 +64,7 @@ No heuristic findings.
 
 ## Input hashes
 
-- `data.csv`: `593777e7fbce3416989aba7f20aa1865b5a9535d93456db0f5dd3f600cc7f518`
+- `data.csv`: `cb52476a95187874065f6cc5306c368b7433d28fd8357dccfe659603a3f5e24a`
 - `invalid.jsonl`: `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`
 - `metrics.json`: `70263c17f02120c8f4e04285025aa8d5e43b71bd7034030df7fc808fc211cd65`
 - `notes.md`: `a510c5cf6eb3f60d592443e63d03bcda952e157eea94c9cd76a4695426cb51e9`
