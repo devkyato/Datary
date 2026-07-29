@@ -81,6 +81,7 @@ working paths are redacted unless `--include-path` is used. Environment values a
 datary inspect demo --field value
 datary inspect demo --quality
 datary inspect demo --plot value
+datary inspect demo --monotonic-field distance --counter-field packet_count --quality
 ```
 
 Checks cover missing/non-finite values, duplicates, changing shapes and types, frozen or

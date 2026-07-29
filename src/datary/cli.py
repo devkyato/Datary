@@ -49,6 +49,18 @@ def parser() -> argparse.ArgumentParser:
     inspect.add_argument("--time-field")
     inspect.add_argument("--field")
     inspect.add_argument("--quality", action="store_true")
+    inspect.add_argument(
+        "--monotonic-field",
+        action="append",
+        default=[],
+        help="field expected to be non-decreasing; repeat for multiple fields",
+    )
+    inspect.add_argument(
+        "--counter-field",
+        action="append",
+        default=[],
+        help="counter field checked for resets; repeat for multiple fields",
+    )
     inspect.add_argument("--plot", help="comma-separated fields")
     inspect.add_argument("--json", action="store_true")
     compare = commands.add_parser("compare", help="compare two or more sessions/files")
@@ -123,7 +135,13 @@ def _dispatch(args: argparse.Namespace) -> int:
         session = Session.open(path)
         print(f"Recorded {session.manifest['valid_record_count']} valid and {session.manifest['invalid_record_count']} invalid records in {path}")
     elif args.command == "inspect":
-        inspection = inspect_source(_resolve(args.source, workspace), input_format=args.format, time_field=args.time_field)
+        inspection = inspect_source(
+            _resolve(args.source, workspace),
+            input_format=args.format,
+            time_field=args.time_field,
+            monotonic_fields=args.monotonic_field,
+            counter_fields=args.counter_field,
+        )
         if args.json:
             print(json.dumps(inspection.to_dict(), indent=2, ensure_ascii=False))
         else:

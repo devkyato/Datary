@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2 - 2026-07-29
+
+- Added configurable monotonicity-violation and counter-reset quality checks.
+- Exposed repeatable `--monotonic-field` and `--counter-field` inspection options.
+- Added typed API parameters, deterministic findings, tests, and quality-check documentation.
+
 ## 0.1.1 - 2026-07-29
 
 - Added canonical project, documentation, issue, and changelog metadata to distributions.
