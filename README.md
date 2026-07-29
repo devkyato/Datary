@@ -2,6 +2,11 @@
 
 # Datary
 
+[![CI](https://github.com/devkyato/datary-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/devkyato/datary-lab/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/devkyato/datary-lab?include_prereleases)](https://github.com/devkyato/datary-lab/releases)
+[![Python](https://img.shields.io/badge/Python-3.9--3.14-3776AB.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Datary is a local-first terminal laboratory for recording, validating, analysing, replaying,
 comparing, plotting, and documenting data emitted by programs and simulations.
 

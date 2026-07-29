@@ -5,5 +5,4 @@ from datary.inspection import inspect_source
 from datary.sessions import Session
 
 __all__ = ["Session", "compare_sessions", "inspect_source"]
-__version__ = "0.1.0"
-
+__version__ = "0.1.1"
