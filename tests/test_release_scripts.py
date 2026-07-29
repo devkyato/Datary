@@ -1,7 +1,12 @@
+import runpy
 from pathlib import Path
 
 import pytest
-from scripts.build_checksums import current_version
+
+SCRIPT = Path(__file__).parents[1] / "scripts" / "build_checksums.py"
+current_version = runpy.run_path(str(SCRIPT), run_name="datary_checksum_test")[
+    "current_version"
+]
 
 
 def test_current_release_version() -> None:
