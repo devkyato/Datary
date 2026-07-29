@@ -3,6 +3,8 @@ from pathlib import Path
 
 import pytest
 
+from datary import __version__
+
 SCRIPT = Path(__file__).parents[1] / "scripts" / "build_checksums.py"
 current_version = runpy.run_path(str(SCRIPT), run_name="datary_checksum_test")[
     "current_version"
@@ -10,7 +12,7 @@ current_version = runpy.run_path(str(SCRIPT), run_name="datary_checksum_test")[
 
 
 def test_current_release_version() -> None:
-    assert current_version() == "0.1.2"
+    assert current_version() == __version__
 
 
 def test_missing_project_version_is_rejected(tmp_path: Path) -> None:
