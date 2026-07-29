@@ -1,0 +1,17 @@
+{
+  "findings": [
+    {
+      "affected": "all",
+      "assumptions": [
+        "Only meaningful for ratio-scale signals."
+      ],
+      "check_id": "high-noise",
+      "evidence": 0.6055300708194983,
+      "explanation": "Variation is high relative to the mean.",
+      "field": "timestamp",
+      "severity": "info",
+      "suggested_investigation": "Inspect the affected raw records and confirm domain expectations.",
+      "threshold": "coefficient of variation > 0.5"
+    }
+  ]
+}

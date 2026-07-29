@@ -1,0 +1,61 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "datary-lab"
+version = "0.1.0"
+description = "A local-first terminal laboratory for reproducible program data."
+readme = "README.md"
+requires-python = ">=3.9"
+license = {file = "LICENSE"}
+authors = [{name = "devkyato"}]
+keywords = ["data", "terminal", "experiments", "reproducibility"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+]
+dependencies = []
+
+[project.optional-dependencies]
+plot = ["matplotlib>=3.7"]
+dev = [
+  "build>=1.2",
+  "matplotlib>=3.7",
+  "mypy>=1.10",
+  "pytest>=8",
+  "pytest-cov>=5",
+  "ruff>=0.6",
+]
+
+[project.scripts]
+datary = "datary.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/datary"]
+
+[tool.hatch.build.targets.sdist]
+include = ["/src", "/tests", "/docs", "/examples", "/scripts", "/README.md", "/LICENSE", "/CHANGELOG.md", "/CONTRIBUTING.md", "/SECURITY.md", "/pyproject.toml"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+files = ["src/datary", "scripts"]
+warn_unreachable = true
+follow_imports = "skip"
+no_site_packages = true
+ignore_missing_imports = true
