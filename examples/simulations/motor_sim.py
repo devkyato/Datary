@@ -1,4 +1,5 @@
 """Tiny deterministic motor simulation for Datary examples."""
+
 import json
 import math
 

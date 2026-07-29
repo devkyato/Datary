@@ -5,9 +5,11 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from dataclasses import field as dataclass_field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
-Record = Dict[str, Any]
+JsonScalar = Union[None, bool, int, float, str]
+JsonValue = Union[JsonScalar, List["JsonValue"], Dict[str, "JsonValue"]]
+Record = Dict[str, JsonValue]
 
 
 @dataclass
@@ -16,8 +18,8 @@ class Finding:
     severity: str
     field: Optional[str]
     affected: str
-    evidence: Any
-    threshold: Any
+    evidence: JsonValue
+    threshold: JsonValue
     explanation: str
     assumptions: List[str] = dataclass_field(default_factory=list)
     suggested_investigation: str = ""
@@ -43,6 +45,7 @@ class Inspection:
     timing: Dict[str, Any]
     quality: List[Dict[str, Any]]
     units: Dict[str, str] = dataclass_field(default_factory=dict)
+    engineering: Dict[str, Any] = dataclass_field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -54,6 +57,7 @@ class Comparison:
     fields: Dict[str, Dict[str, Any]]
     warnings: List[str]
     goal: Optional[str] = None
+    timing: Dict[str, Any] = dataclass_field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -72,3 +76,8 @@ class RecordOptions:
     include_path: bool = False
     max_line_bytes: int = 1_048_576
     max_fields: int = 1_000
+    target_field: Optional[str] = None
+    response_field: Optional[str] = None
+    sequence_field: Optional[str] = None
+    latency_field: Optional[str] = None
+    bytes_field: Optional[str] = None

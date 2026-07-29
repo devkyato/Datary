@@ -1,4 +1,5 @@
 """Verify deterministic generator output in separate calls."""
+
 import subprocess
 import sys
 
@@ -8,4 +9,3 @@ second = subprocess.check_output(command)
 if first != second:
     raise SystemExit("generator output differs")
 print("deterministic")
-

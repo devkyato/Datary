@@ -1,0 +1,15 @@
+changelog:
+  categories:
+    - title: Security and correctness
+      labels:
+        - security
+        - bug
+    - title: New work
+      labels:
+        - enhancement
+    - title: Documentation
+      labels:
+        - documentation
+    - title: Other changes
+      labels:
+        - "*"

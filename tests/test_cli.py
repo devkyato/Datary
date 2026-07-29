@@ -1,4 +1,7 @@
+import importlib
 from pathlib import Path
+
+import pytest
 
 from datary.cli import main, parser
 
@@ -33,3 +36,14 @@ def test_quality_field_options_are_repeatable() -> None:
     )
     assert arguments.monotonic_field == ["distance"]
     assert arguments.counter_field == ["packets"]
+
+
+def test_doctor_treats_plotting_as_optional(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def unavailable(_name: str) -> object:
+        raise ImportError
+
+    monkeypatch.setattr(importlib, "import_module", unavailable)
+    assert main(["--workspace", str(tmp_path), "doctor"]) == 0
+    assert "OPTIONAL-MISSING  optional_plotting_available" in capsys.readouterr().out

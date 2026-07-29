@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "datary-lab"
-version = "0.1.3"
+version = "0.2.0"
 description = "A local-first terminal laboratory for reproducible program data."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -13,8 +13,18 @@ authors = [{name = "devkyato"}]
 keywords = ["data", "terminal", "experiments", "reproducibility"]
 classifiers = [
   "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Typing :: Typed",
 ]
 dependencies = []
 
@@ -45,7 +55,7 @@ packages = ["src/datary"]
 include = ["/src", "/tests", "/docs", "/examples", "/scripts", "/README.md", "/LICENSE", "/CHANGELOG.md", "/CONTRIBUTING.md", "/SECURITY.md", "/pyproject.toml"]
 
 [tool.pytest.ini_options]
-addopts = "-q"
+addopts = "-q --cov=datary --cov-report=term-missing --cov-fail-under=75"
 testpaths = ["tests"]
 
 [tool.ruff]
@@ -58,10 +68,17 @@ select = ["E", "F", "I", "B"]
 ignore = ["E501"]
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.9"
 strict = true
-files = ["src/datary", "scripts"]
+files = ["src/datary", "scripts", "tests"]
 warn_unreachable = true
+follow_imports = "normal"
+
+[[tool.mypy.overrides]]
+module = ["pytest", "_pytest", "_pytest.*"]
 follow_imports = "skip"
-no_site_packages = true
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["test_formats", "test_parsers"]
+disallow_untyped_decorators = false

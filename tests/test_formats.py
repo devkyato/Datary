@@ -23,3 +23,15 @@ def test_ambiguous(text: str) -> None:
     with pytest.raises(AmbiguousFormatError):
         detect_format(text)
 
+
+def test_numeric_extension_does_not_override_ambiguity() -> None:
+    with pytest.raises(AmbiguousFormatError):
+        detect_format("1,2\n3,4\n", "numbers.csv")
+    with pytest.raises(AmbiguousFormatError):
+        detect_format("1\t2\n3\t4\n", "numbers.tsv")
+
+
+def test_incomplete_json_array_sample_is_still_detected() -> None:
+    detected, warnings = detect_format('[{"x":1},\n')
+    assert detected == "json"
+    assert warnings

@@ -10,8 +10,9 @@ data so I can repeat the exact run later:
 
 ```bash
 datary generate motor-speed --seed 4 --duration 10 |
-  datary record motor --format jsonl --time-field timestamp --unit speed_rpm=rpm
-datary inspect motor --quality --plot speed_rpm,current_a
+  datary record motor --format jsonl --time-field timestamp \
+    --target-field target_rpm --response-field speed_rpm --unit speed_rpm=rpm
+datary inspect motor --quality --plot speed_rpm,current_a --plot-kind line
 datary report motor
 ```
 
@@ -31,6 +32,19 @@ datary compare baseline improved --field latency_ms --goal lower:latency_ms
 
 The `lower:` goal is what gives Datary permission to calculate improvement or regression. Without
 it, Datary shows the measurements but does not invent a winner.
+
+For network metrics, record the field roles explicitly:
+
+```bash
+datary record network-run --format jsonl \
+  --time-field timestamp \
+  --sequence-field sequence \
+  --latency-field latency_ms \
+  --bytes-field bytes
+```
+
+That gives the report enough meaning to calculate loss, duplicate rate, out-of-order packets,
+latency summaries, jitter, and throughput without guessing which column means what.
 
 ## Counter and monotonicity expectations
 
