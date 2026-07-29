@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.3 - 2026-07-29
+
+- Rewrote the project story and workflow in a clearer, more personal voice.
+- Added a narrative explanation of why Datary exists and how a recording becomes evidence.
+- Refined architecture, reproducibility, privacy, tutorial, and contribution guidance.
+- Updated installation and alpha-status references for the current release.
+
 ## 0.1.2 - 2026-07-29
 
 - Added configurable monotonicity-violation and counter-reset quality checks.

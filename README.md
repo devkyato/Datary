@@ -7,18 +7,54 @@
 [![Python](https://img.shields.io/badge/Python-3.9--3.14-3776AB.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Datary is a local-first terminal laboratory for recording, validating, analysing, replaying,
+Datary is my local-first terminal laboratory for recording, validating, analysing, replaying,
 comparing, plotting, and documenting data emitted by programs and simulations.
 
 > Run a program, capture its output, validate the data, measure the behaviour, compare
 > experiments, and generate reproducible evidence.
 
-**Status:** `0.1.0` is an honest alpha. Session format changes will be documented, but may not
+**Status:** `0.1.3` is an honest alpha. Session format changes will be documented, but may not
 remain backward compatible before 1.0.
+
+## Why I built it
+
+I kept running small programs and simulations, then ending up with the same loose collection of
+terminal output, one-off parsing scripts, screenshots, and notes. The program had run, but the
+evidence around the run was fragile.
+
+I thought about that point for a while: what if one command could preserve the original output,
+parse what was valid, explain what looked wrong, calculate useful measurements, and leave behind
+enough context to reproduce the experiment later? That became Datary.
+
+Oh! One important part is that Datary does not try to become the experiment. It does not execute
+input files, decide whether your scientific method is sound, or quietly call one result “better.”
+It records the evidence and gives you transparent tools for examining it.
+
+## How I think about a run
+
+A Datary workflow is deliberately small:
+
+1. Your program writes data to standard output or an ordinary file.
+2. Datary preserves the raw input before interpreting it.
+3. Valid records become clean JSON Lines and CSV; malformed input keeps an explanation.
+4. Metrics and quality checks describe what happened and state their assumptions.
+5. The session keeps the hashes, commands, reports, plots, and notes together.
+
+That is the whole idea: the next person looking at the result—even when that person is future
+you—should be able to follow the trail from raw output to reported evidence.
 
 ## Install
 
 Datary supports Python 3.9–3.14 and has no required runtime dependency. Matplotlib is optional.
+
+Install the current GitHub release:
+
+```bash
+python -m pip install https://github.com/devkyato/datary-lab/releases/download/v0.1.3/datary_lab-0.1.3-py3-none-any.whl
+datary --version
+```
+
+Or work from a local checkout:
 
 ```bash
 python -m venv .venv
@@ -56,20 +92,21 @@ conservative: ambiguous or empty input requires `--format`. Inputs are inert dat
 
 ## Session directory
 
-Each recording is self-contained:
+Each recording is self-contained. I chose ordinary files here on purpose: you can inspect,
+copy, archive, or version a session without a Datary server.
 
 ```text
 demo/
-├── manifest.json     # identity, schema, hashes, commands, privacy choices
-├── raw.log           # exact source text
-├── records.jsonl     # clean records
-├── invalid.jsonl     # malformed-record reasons
-├── data.csv
-├── metrics.json
-├── quality.json
-├── notes.md
-├── plots/
-└── reports/
+|-- manifest.json     # identity, schema, hashes, commands, privacy choices
+|-- raw.log           # exact source text
+|-- records.jsonl     # clean records
+|-- invalid.jsonl     # malformed-record reasons
+|-- data.csv
+|-- metrics.json
+|-- quality.json
+|-- notes.md
+|-- plots/
+`-- reports/
 ```
 
 Existing names receive a deterministic numeric suffix; `--overwrite` is explicit. Absolute
@@ -86,8 +123,9 @@ datary inspect demo --monotonic-field distance --counter-field packet_count --qu
 
 Checks cover missing/non-finite values, duplicates, changing shapes and types, frozen or
 constant signals, spikes, robust outliers, high noise, backwards/duplicate timestamps,
-irregular intervals, gaps, and sequence loss. Findings include evidence, thresholds,
-assumptions, explanations, and suggested investigation. They are heuristics, not verdicts.
+irregular intervals, gaps, sequence loss, counter resets, and explicit monotonicity expectations.
+Findings include evidence, thresholds, assumptions, explanations, and suggested investigation.
+I treat them as leads to investigate, not verdicts.
 
 Matplotlib uses the non-interactive `Agg` backend. The Python plotting API creates PNG or SVG
 line, scatter, step, and histogram plots without opening windows.
@@ -105,8 +143,9 @@ datary compare baseline improved --field error --goal lower:error
 datary compare run-1 run-2 run-3 --report comparison.md --format markdown
 ```
 
-Fields are aligned by name and ordered deterministically. Datary does not call an experiment
-better without an explicit goal; incomparable fields produce warnings.
+Fields are aligned by name and ordered deterministically. I thought this part deserved a firm
+rule: Datary does not call an experiment better without an explicit goal. Incomparable fields
+produce warnings instead of a confident-looking guess.
 
 ## Replay, reports, and generators
 
@@ -149,7 +188,11 @@ for properly designed experiments. The alpha currently keeps valid records in me
 whole-session statistics after streaming them to disk; input ingestion itself is bounded per line.
 Timestamp parsing currently expects numeric elapsed time for timing analysis and replay.
 
+I would rather state those limits plainly than hide them behind an alpha label. The open issues
+track the work needed to remove them.
+
 ## Contributing and licence
 
-Run `pytest`, `ruff check .`, and `mypy`. See [CONTRIBUTING.md](CONTRIBUTING.md). Datary is
-MIT-licensed; copyright © 2026 devkyato.
+If the workflow sounds useful, I would be glad to have another set of eyes on it. Run `pytest`,
+`ruff check .`, and `mypy`, then see [CONTRIBUTING.md](CONTRIBUTING.md). Datary is MIT-licensed;
+copyright © 2026 devkyato.
