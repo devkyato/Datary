@@ -70,8 +70,10 @@ def convert_source(
             if to_format == "csv":
                 analysis.finish()
                 fields = analysis.fields
-                writer = csv.DictWriter(stream, fieldnames=fields)
-                csv.writer(stream).writerow([csv_safe_cell(field) for field in fields])
+                writer = csv.DictWriter(stream, fieldnames=fields, lineterminator="\n")
+                csv.writer(stream, lineterminator="\n").writerow(
+                    [csv_safe_cell(field) for field in fields]
+                )
                 for record in analysis.records():
                     writer.writerow({field: csv_safe_cell(record.get(field)) for field in fields})
             stream.flush()

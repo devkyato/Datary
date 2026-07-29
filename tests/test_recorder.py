@@ -25,6 +25,7 @@ def test_record_session_and_integrity(tmp_path: Path) -> None:
     assert session.manifest["working_directory"] == "<redacted>"
     assert session.verify() == []
     assert (path / "raw.log").read_text(encoding="utf-8").endswith('{"t":1,"x":2}\n')
+    assert b"\r\n" not in (path / "data.csv").read_bytes()
 
 
 def test_duplicate_names_and_overwrite(tmp_path: Path) -> None:

@@ -475,8 +475,10 @@ def _generate(args: argparse.Namespace) -> None:
             else:
                 if first:
                     fields = list(record)
-                    writer = csv.DictWriter(output, fieldnames=fields)
-                    csv.writer(output).writerow([csv_safe_cell(field) for field in fields])
+                    writer = csv.DictWriter(output, fieldnames=fields, lineterminator="\n")
+                    csv.writer(output, lineterminator="\n").writerow(
+                        [csv_safe_cell(field) for field in fields]
+                    )
                 assert writer is not None
                 writer.writerow(record)
             output.flush()

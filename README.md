@@ -13,7 +13,7 @@ comparing, plotting, and documenting data emitted by programs and simulations.
 > Run a program, capture its output, validate the data, measure the behaviour, compare
 > experiments, and generate reproducible evidence.
 
-**Status:** `0.2.0` is an alpha. This release concentrates on analytical correctness, safe
+**Status:** `0.2.1` is an alpha. This release concentrates on analytical correctness, safe
 publication, bounded-memory analysis, and adversarial input handling. The session reader remains
 compatible with format 1; new recordings use session format 2.
 
@@ -37,7 +37,7 @@ Datary supports CPython 3.9–3.14. Core operation has no required runtime depen
 optional and uses the headless `Agg` backend.
 
 ```bash
-python -m pip install https://github.com/devkyato/datary-lab/releases/download/v0.2.0/datary_lab-0.2.0-py3-none-any.whl
+python -m pip install https://github.com/devkyato/datary-lab/releases/download/v0.2.1/datary_lab-0.2.1-py3-none-any.whl
 datary --version
 ```
 

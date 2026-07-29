@@ -332,8 +332,13 @@ def _validate_options(options: RecordOptions) -> None:
 
 def _write_csv(path: Path, records: Iterable[Dict[str, Any]], fields: List[str]) -> None:
     with path.open("w", encoding="utf-8", newline="") as stream:
-        writer = csv.DictWriter(stream, fieldnames=fields, extrasaction="ignore")
-        csv.writer(stream).writerow([csv_safe_cell(field) for field in fields])
+        writer = csv.DictWriter(
+            stream,
+            fieldnames=fields,
+            extrasaction="ignore",
+            lineterminator="\n",
+        )
+        csv.writer(stream, lineterminator="\n").writerow([csv_safe_cell(field) for field in fields])
         for record in records:
             writer.writerow({key: csv_safe_cell(record.get(key)) for key in fields})
         stream.flush()
