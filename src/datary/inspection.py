@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Sequence, Union
 
 from datary.formats import detect_format
 from datary.metrics import summarize_records
@@ -40,6 +40,8 @@ def inspect_source(
     *,
     input_format: Optional[str] = None,
     time_field: Optional[str] = None,
+    monotonic_fields: Optional[Sequence[str]] = None,
+    counter_fields: Optional[Sequence[str]] = None,
 ) -> Inspection:
     records, invalid, selected, units, manifest_time = load_source(source, input_format)
     chosen_time = time_field or manifest_time
@@ -56,7 +58,14 @@ def inspect_source(
         fields=fields,
         metrics=metrics["numeric"],
         timing=metrics["timing"],
-        quality=[finding.to_dict() for finding in analyze_quality(records, chosen_time)],
+        quality=[
+            finding.to_dict()
+            for finding in analyze_quality(
+                records,
+                chosen_time,
+                monotonic_fields=monotonic_fields,
+                counter_fields=counter_fields,
+            )
+        ],
         units=units,
     )
-

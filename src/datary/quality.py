@@ -29,9 +29,15 @@ def _finding(
 
 
 def analyze_quality(
-    records: Sequence[Record], time_field: Optional[str] = None, sequence_field: Optional[str] = None
+    records: Sequence[Record],
+    time_field: Optional[str] = None,
+    sequence_field: Optional[str] = None,
+    monotonic_fields: Optional[Sequence[str]] = None,
+    counter_fields: Optional[Sequence[str]] = None,
 ) -> List[Finding]:
     findings: List[Finding] = []
+    monotonic = set(monotonic_fields or ())
+    counters = set(counter_fields or ())
     if not records:
         return [_finding("empty-data", "warning", None, "all", 0, "> 0 records", "No valid records were parsed.")]
     fields = sorted({key for record in records for key in record})
@@ -60,6 +66,39 @@ def analyze_quality(
         clean = [(index, value) for index, value in numbers if value is not None]
         if len(clean) >= 2:
             numeric = [float(value) for _, value in clean]
+            decreases = [
+                clean[index][0]
+                for index in range(1, len(clean))
+                if numeric[index] < numeric[index - 1]
+            ]
+            if field in monotonic and decreases:
+                findings.append(
+                    _finding(
+                        "monotonicity-violation",
+                        "warning",
+                        field,
+                        _range(decreases),
+                        len(decreases),
+                        "no decreases",
+                        "The field decreases despite an explicit monotonicity expectation.",
+                        ["Missing values are ignored between consecutive valid values."],
+                        "Confirm ordering and whether resets or wraparound are expected.",
+                    )
+                )
+            if field in counters and decreases:
+                findings.append(
+                    _finding(
+                        "counter-reset",
+                        "warning",
+                        field,
+                        _range(decreases),
+                        len(decreases),
+                        "no decreases",
+                        "The counter decreases, indicating a reset, rollover, or reordered record.",
+                        ["The selected field is expected to be a non-decreasing counter."],
+                        "Check device restarts, counter width, wraparound, and record ordering.",
+                    )
+                )
             if max(numeric) == min(numeric):
                 findings.append(_finding("constant-signal", "info", field, f"{clean[0][0]}-{clean[-1][0]}", numeric[0], "no variation", "The signal is constant."))
             frozen = _longest_run(numeric)
@@ -130,4 +169,3 @@ def _longest_run(values: List[float]) -> Tuple[int, int]:
 
 def _range(indices: List[int]) -> str:
     return str(indices[0]) if len(indices) == 1 else f"{indices[0]}-{indices[-1]}"
-
