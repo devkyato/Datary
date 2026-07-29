@@ -31,7 +31,8 @@ def write_report(session: Session, output: Path, report_format: str = "markdown"
     if report_format == "json":
         atomic_json(output, data)
     elif report_format == "markdown":
-        output.write_text(_markdown(data), encoding="utf-8", newline="\n")
+        with output.open("w", encoding="utf-8", newline="\n") as stream:
+            stream.write(_markdown(data))
     else:
         raise ValueError("report format must be markdown or json")
     return output
