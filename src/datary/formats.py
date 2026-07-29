@@ -28,7 +28,11 @@ def detect_format(sample: str, filename: Optional[str] = None) -> Tuple[str, Lis
             if isinstance(value, list):
                 return "json", warnings
         except json.JSONDecodeError:
-            pass
+            warnings.append(
+                "JSON array inferred from its opening delimiter; "
+                "the complete stream will be validated while parsing"
+            )
+            return "json", warnings
     lines = [line for line in text.splitlines() if line.strip()]
     if lines:
         json_objects = 0
@@ -40,14 +44,16 @@ def detect_format(sample: str, filename: Optional[str] = None) -> Tuple[str, Lis
                 break
         if json_objects == min(20, len(lines)):
             return "jsonl", warnings
-    if lines and all(
-        len(re.findall(r"(?:^|\s)[^=\s]+=[^\s]+", line)) >= 1 for line in lines[:10]
-    ):
+    if lines and all(len(re.findall(r"(?:^|\s)[^=\s]+=[^\s]+", line)) >= 1 for line in lines[:10]):
         return "keyvalue", warnings
-    if suffix == ".tsv" or (lines and "\t" in lines[0]):
-        return "tsv", warnings
-    if suffix == ".csv":
-        return "csv", warnings
+    if lines and "\t" in lines[0]:
+        rows = list(csv.reader(io.StringIO("\n".join(lines[:10])), delimiter="\t"))
+        if len({len(row) for row in rows}) == 1:
+            if any(not _number(cell) for cell in rows[0]):
+                return "tsv", warnings
+            raise AmbiguousFormatError(
+                "tab-separated numeric input is ambiguous; use --format tsv or whitespace"
+            )
     if lines and "," in lines[0]:
         rows = list(csv.reader(io.StringIO("\n".join(lines[:10]))))
         if len({len(row) for row in rows}) == 1:
@@ -58,6 +64,11 @@ def detect_format(sample: str, filename: Optional[str] = None) -> Tuple[str, Lis
             raise AmbiguousFormatError(
                 "comma-separated numeric input is ambiguous; use --format stream or csv"
             )
+    if suffix in {".csv", ".tsv"} and lines:
+        delimiter = "," if suffix == ".csv" else "\t"
+        first = next(csv.reader([lines[0]], delimiter=delimiter))
+        if any(not _number(cell) for cell in first):
+            return suffix[1:], warnings
     if lines and all(len(line.split()) > 1 for line in lines[:10]):
         if all(all(_number(cell) for cell in line.split()) for line in lines[:10]):
             return "whitespace", warnings

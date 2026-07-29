@@ -1,46 +1,55 @@
 {
+  "command_context": "Run from the session parent directory or set DATARY_WORKSPACE to that directory.",
   "commands": {
     "compare": "datary compare noisy-sensor-example OTHER",
     "inspect": "datary inspect noisy-sensor-example",
     "replay": "datary replay noisy-sensor-example",
     "report": "datary report noisy-sensor-example"
   },
-  "datary_version": "0.1.0",
-  "ended_at": "2026-07-29T13:43:20.221953+08:00",
+  "datary_version": "0.2.0",
+  "ended_at": "2026-07-29T19:37:50.055197+08:00",
+  "field_roles": {},
   "fields": {
     "timestamp": "number",
     "value": "number"
   },
   "hashes": {
-    "data.csv": "3943c5fe0029450dc7adbd01ce800f1839760a4df9cc6a8c370bdb4c68a7c187",
-    "metrics.json": "ae371e6a73b6fec4e2c4c538df7845c9c5e731851d5560d009c607e65881563d",
-    "quality.json": "b86c70595fbbafb7b8180847ea53cf369fa14d69d3cc56e2e0c520e419e3e94f",
-    "raw.log": "8f453644d5e733e000bac97a81a7db5e66f158aa67f694499ec91509ac021760",
-    "records.jsonl": "8f453644d5e733e000bac97a81a7db5e66f158aa67f694499ec91509ac021760"
+    "data.csv": "593777e7fbce3416989aba7f20aa1865b5a9535d93456db0f5dd3f600cc7f518",
+    "invalid.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "metrics.json": "70263c17f02120c8f4e04285025aa8d5e43b71bd7034030df7fc808fc211cd65",
+    "notes.md": "a510c5cf6eb3f60d592443e63d03bcda952e157eea94c9cd76a4695426cb51e9",
+    "quality.json": "8aa973100a15bf817985395637131e838cf84e427be4792583def923f020f5fa",
+    "raw.log": "d22ef77cba7e4330d271280e85dc7d1d8a852b6a731b5443ca436d5fd2d65d8e",
+    "records.jsonl": "9ccd2b842825bf7788c36e7e546a04a3b582cae386903dd1171b08816fc3f31e"
   },
   "input_format": "jsonl",
+  "integrity_scope": "SHA-256 corruption detection for manifest and listed artifacts; not cryptographic authenticity",
   "interrupted": false,
   "invalid_record_count": 0,
   "original_command": null,
   "parameters": {},
+  "parser_policy": "conservative-scalars-v1",
   "parser_warnings": [],
-  "record_count": 21,
+  "record_count": 101,
   "sampling": {
     "backward_timestamp_count": 0,
     "duplicate_timestamp_count": 0,
-    "effective_sample_rate": 10.0,
+    "duration": 10.0,
+    "effective_sample_rate": 9.999999999999988,
+    "end": 10.0,
     "gap_count": 0,
-    "jitter": 8.073008690572807e-17,
-    "maximum_interval": 0.10000000000000009,
-    "mean_interval": 0.1,
-    "median_interval": 0.09999999999999999,
-    "minimum_interval": 0.09999999999999987
+    "jitter": 4.3390452126414056e-16,
+    "maximum_interval": 0.10000000000000142,
+    "mean_interval": 0.10000000000000013,
+    "median_interval": 0.09999999999999998,
+    "minimum_interval": 0.09999999999999964,
+    "start": 0.0
   },
-  "session_format_version": "1",
+  "session_format_version": "2",
   "session_name": "noisy-sensor-example",
-  "started_at": "2026-07-29T13:43:20.211495+08:00",
+  "started_at": "2026-07-29T19:37:50.019613+08:00",
   "time_field": "timestamp",
   "units": {},
-  "valid_record_count": 21,
+  "valid_record_count": 101,
   "working_directory": "<redacted>"
 }

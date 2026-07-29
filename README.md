@@ -13,8 +13,9 @@ comparing, plotting, and documenting data emitted by programs and simulations.
 > Run a program, capture its output, validate the data, measure the behaviour, compare
 > experiments, and generate reproducible evidence.
 
-**Status:** `0.1.3` is an honest alpha. Session format changes will be documented, but may not
-remain backward compatible before 1.0.
+**Status:** `0.2.0` is an alpha. This release concentrates on analytical correctness, safe
+publication, bounded-memory analysis, and adversarial input handling. The session reader remains
+compatible with format 1; new recordings use session format 2.
 
 ## Why I built it
 
@@ -23,38 +24,30 @@ terminal output, one-off parsing scripts, screenshots, and notes. The program ha
 evidence around the run was fragile.
 
 I thought about that point for a while: what if one command could preserve the original output,
-parse what was valid, explain what looked wrong, calculate useful measurements, and leave behind
-enough context to reproduce the experiment later? That became Datary.
+parse what was valid, explain what looked wrong, calculate useful measurements, and leave enough
+context to reproduce the experiment later? That became Datary.
 
-Oh! One important part is that Datary does not try to become the experiment. It does not execute
-input files, decide whether your scientific method is sound, or quietly call one result “better.”
-It records the evidence and gives you transparent tools for examining it.
-
-## How I think about a run
-
-A Datary workflow is deliberately small:
-
-1. Your program writes data to standard output or an ordinary file.
-2. Datary preserves the raw input before interpreting it.
-3. Valid records become clean JSON Lines and CSV; malformed input keeps an explanation.
-4. Metrics and quality checks describe what happened and state their assumptions.
-5. The session keeps the hashes, commands, reports, plots, and notes together.
-
-That is the whole idea: the next person looking at the result—even when that person is future
-you—should be able to follow the trail from raw output to reported evidence.
+Oh! One important boundary is that Datary does not try to become the experiment. It never executes
+input, silently decides what “better” means, or claims that a clean report proves a sound
+experiment. It records evidence and exposes the assumptions used to examine it.
 
 ## Install
 
-Datary supports Python 3.9–3.14 and has no required runtime dependency. Matplotlib is optional.
-
-Install the current GitHub release:
+Datary supports CPython 3.9–3.14. Core operation has no required runtime dependency; Matplotlib is
+optional and uses the headless `Agg` backend.
 
 ```bash
-python -m pip install https://github.com/devkyato/datary-lab/releases/download/v0.1.3/datary_lab-0.1.3-py3-none-any.whl
+python -m pip install https://github.com/devkyato/datary-lab/releases/download/v0.2.0/datary_lab-0.2.0-py3-none-any.whl
 datary --version
 ```
 
-Or work from a local checkout:
+For plotting:
+
+```bash
+python -m pip install "datary-lab[plot]"
+```
+
+For a local checkout:
 
 ```bash
 python -m venv .venv
@@ -63,11 +56,14 @@ python -m pip install -e ".[dev]"
 datary --version
 ```
 
+On macOS or Linux, activate with `source .venv/bin/activate`.
+
 ## Five-minute local demonstration
 
 ```bash
 datary generate noisy-sensor --seed 1 | datary record demo --format jsonl --time-field timestamp
 datary inspect demo --quality
+datary inspect demo --plot value
 datary report demo
 datary replay demo --no-timing
 datary compare demo demo --field value
@@ -86,22 +82,31 @@ datary inspect readings.jsonl
 datary convert readings.jsonl --to csv
 ```
 
-Datary reads stdin, CSV, TSV, JSON arrays, JSON Lines, whitespace numeric rows, `key=value`
-rows, headerless comma streams (`--format stream`), and existing sessions. Detection is
-conservative: ambiguous or empty input requires `--format`. Inputs are inert data—never code.
+Datary reads standard input, CSV, TSV, incrementally decoded JSON arrays, JSON Lines,
+whitespace-delimited rows, `key=value` rows, headerless comma streams (`--format stream`), and
+existing Datary sessions. CSV supports quoted embedded newlines. UTF-8 BOMs are accepted.
+Duplicate JSON keys and non-finite JSON numbers are rejected with evidence.
+
+Detection is deliberately conservative. Empty or ambiguous input requires `--format`; Datary
+never guesses merely to keep a pipeline moving.
+
+For delimiter-based formats, the documented `conservative-scalars-v1` policy converts empty cells,
+lowercase JSON booleans, canonical integers, and canonical finite floats. Identifier-like values
+such as `00123` and tokens such as `NA` remain strings. The policy name is recorded in the
+manifest.
 
 ## Session directory
 
-Each recording is self-contained. I chose ordinary files here on purpose: you can inspect,
-copy, archive, or version a session without a Datary server.
+Each recording is self-contained:
 
 ```text
 demo/
-|-- manifest.json     # identity, schema, hashes, commands, privacy choices
-|-- raw.log           # exact source text
-|-- records.jsonl     # clean records
-|-- invalid.jsonl     # malformed-record reasons
-|-- data.csv
+|-- manifest.json       # identity, schema, options, commands, artifact hashes
+|-- manifest.sha256     # corruption check for the manifest itself
+|-- raw.log             # preserved input text
+|-- records.jsonl       # accepted records
+|-- invalid.jsonl       # rejected-record reasons
+|-- data.csv            # spreadsheet-safe convenience export
 |-- metrics.json
 |-- quality.json
 |-- notes.md
@@ -109,90 +114,171 @@ demo/
 `-- reports/
 ```
 
-Existing names receive a deterministic numeric suffix; `--overwrite` is explicit. Absolute
-working paths are redacted unless `--include-path` is used. Environment values are never stored.
+Recording uses a sibling staging directory. With `--overwrite`, the previous session is retained
+until its complete replacement is ready; a failed recording restores the original. Without
+`--overwrite`, an existing name receives a deterministic numeric suffix.
+
+The ingest and analysis path is disk-backed and bounded by line, JSON-buffer, field, and file
+limits rather than the number of records. Temporary SQLite is an implementation detail and is
+removed before the session is published.
 
 ## Inspection, quality, and plots
 
 ```bash
 datary inspect demo --field value
 datary inspect demo --quality
-datary inspect demo --plot value
+datary inspect demo --plot value --plot-kind scatter --plot-format svg
 datary inspect demo --monotonic-field distance --counter-field packet_count --quality
 ```
 
-Checks cover missing/non-finite values, duplicates, changing shapes and types, frozen or
-constant signals, spikes, robust outliers, high noise, backwards/duplicate timestamps,
-irregular intervals, gaps, sequence loss, counter resets, and explicit monotonicity expectations.
-Findings include evidence, thresholds, assumptions, explanations, and suggested investigation.
-I treat them as leads to investigate, not verdicts.
+Checks cover missing and invalid values, duplicate rows and timestamps, time moving backwards,
+irregular intervals, large gaps, shape and type changes, frozen and constant signals, spikes,
+robust outliers, high relative noise, sequence loss, counter resets, and explicit monotonicity
+expectations. Findings carry the check ID, severity, field, affected records, evidence, threshold,
+explanation, assumptions, and a suggested investigation.
 
-Matplotlib uses the non-interactive `Agg` backend. The Python plotting API creates PNG or SVG
-line, scatter, step, and histogram plots without opening windows.
+Zero-MAD signals and missing-value index positions are handled explicitly. Schema changes compare
+field names, not only record length.
 
-## Metrics and comparison
+Plots support PNG and SVG line, scatter, step, and histogram output, with missing-data markers
+where an x-position is available. User field names are sanitized before becoming filenames, plot
+directories may not be symlinks, and existing plots require `--overwrite-plot`.
 
-General metrics include count, missing count, extrema, mean, median, variance, standard
-deviation, percentiles, sum, RMS, rate of change, and mean absolute difference. Timing metrics
-include intervals, jitter, effective sampling rate, gaps, and duplicate timestamps. The public
-module also implements defined control-response and network metrics; see
-[docs/metrics.md](docs/metrics.md).
+## Metrics and engineering roles
+
+General metrics retain observation order for net change and adjacent differences while using a
+separate sorted view for quantiles. They include count, missing count, extrema, mean, median,
+sample variance, sample standard deviation, percentiles, sum, RMS, net rate of change, and mean
+absolute adjacent difference.
+
+Timing accepts numeric elapsed seconds or timezone-aware ISO 8601 timestamps. It reports interval
+statistics, population jitter, effective sample rate, gaps, backwards time, and duplicate
+timestamps—including non-adjacent duplicates.
+
+Control and network metrics are opt-in because their field meanings cannot be inferred honestly:
+
+```bash
+python controller.py | datary record controller \
+  --format jsonl \
+  --time-field timestamp \
+  --target-field target \
+  --response-field response
+
+python network.py | datary record network \
+  --format jsonl \
+  --time-field timestamp \
+  --sequence-field sequence \
+  --latency-field latency_ms \
+  --bytes-field bytes
+```
+
+The field roles, definitions, assumptions, and warnings flow into inspection and reports. See
+[the metric definitions](docs/metrics.md).
+
+## Comparing experiments
 
 ```bash
 datary compare baseline improved --field error --goal lower:error
 datary compare run-1 run-2 run-3 --report comparison.md --format markdown
 ```
 
-Fields are aligned by name and ordered deterministically. I thought this part deserved a firm
-rule: Datary does not call an experiment better without an explicit goal. Incomparable fields
-produce warnings instead of a confident-looking guess.
+Fields align by name and output ordering is deterministic. Datary reports per-source count, range,
+mean, median, standard deviation, declared units, sampling rates, individual time ranges, and the
+shared range when available. Unit conflicts and non-overlapping time ranges block confident goal
+claims.
 
-## Replay, reports, and generators
+I thought this part deserved a firm rule: without `--goal lower:FIELD` or
+`--goal higher:FIELD`, Datary does not label an experiment better. Current alpha comparisons do
+not interpolate or resample; differing rates are disclosed and block percentage-improvement
+claims.
+
+## Replay, reports, conversion, and generators
 
 ```bash
 datary replay demo --speed 2
+datary replay demo --no-timing --format csv
 datary report demo --format json --output demo.json
+datary convert readings.csv --to jsonl
 datary generate pid-response --seed 7 --duration 20 --sample-rate 50
 ```
 
-Profiles: `sine`, `noisy-sensor`, `frozen-sensor`, `missing-samples`,
-`duplicate-samples`, `pid-response`, `motor-speed`, `battery-drain`,
-`network-latency`, and `packet-loss`. Equal profile, seed, and options produce identical output.
+Replay preserves relative numeric or ISO 8601 timing unless `--no-timing` is selected. Virtual
+replay remains available through the Python API and tests.
 
-## Python API
+Markdown reports contain identity, reproduction commands, schema, statistics, timing,
+engineering metrics, complete quality evidence, integrity status, hashes, assumptions, and links
+to local plots. JSON reports contain the same structured evidence.
+
+CSV convenience exports neutralize formula-like strings and headers with a leading apostrophe;
+canonical values remain unchanged in `records.jsonl`. Conversion writes an invalid-record sidecar
+rather than silently discarding malformed input.
+
+Profiles are `sine`, `noisy-sensor`, `frozen-sensor`, `missing-samples`,
+`duplicate-samples`, `pid-response`, `motor-speed`, `battery-drain`, `network-latency`, and
+`packet-loss`. Equal profile, seed, options, and Datary version produce identical records. Profile
+defaults create their named anomaly, while an explicit `--missing-rate 0` or
+`--duplicate-rate 0` is honoured exactly.
+
+## Typed Python API
 
 ```python
 from datary import Session, compare_sessions, inspect_source
 
 session = Session.open("demo")
 summary = inspect_source(session)
-comparison = compare_sessions(["baseline", "improved"], fields=["error", "response"])
+comparison = compare_sessions(
+    ["baseline", "improved"],
+    fields=["error", "response"],
+)
 ```
 
-Only these names are the stable public API in this alpha.
+Only `Session`, `inspect_source`, and `compare_sessions` are stable public names during the alpha.
+Record values use a recursive JSON type rather than unrestricted Python objects.
 
 ## Reproducibility, privacy, and security
 
-Raw input, clean records, invalid reasons, configuration, exact follow-up commands, timezone-aware
-timestamps, and SHA-256 hashes remain together. Critical JSON is written atomically. Limits apply
-to line size and field count. Session manifests cannot escape through hash paths, symlinks are
-rejected for trusted session artifacts, reports never interpret formulas or commands, and there
-are no background network calls. See [reproducibility](docs/reproducibility.md),
-[privacy](docs/privacy.md), and [SECURITY.md](SECURITY.md).
+Absolute working paths are `<redacted>` unless `--include-path` is supplied. Environment values
+are never copied. Datary has no telemetry, background service, or network call.
 
-## Limitations
+SHA-256 covers the manifest and every recording-time evidentiary file, including rejected records
+and notes. Plots and reports are derived later and are not silently added to the immutable
+recording manifest. These checks detect accidental corruption; they are not signatures and do not
+prove authenticity against an attacker who can rewrite the entire session.
 
-Datary is not a spreadsheet application, a replacement for statistical expertise, a cloud
-observability platform, a guarantee that collected data is scientifically valid, or a substitute
-for properly designed experiments. The alpha currently keeps valid records in memory for final
-whole-session statistics after streaming them to disk; input ingestion itself is bounded per line.
-Timestamp parsing currently expects numeric elapsed time for timing analysis and replay.
+Input remains inert. There is no expression evaluation, command expansion, pickle loading, or
+formula execution. Session and output paths reject traversal and symlink redirection in trusted
+locations; terminal and Markdown output escape untrusted control or markup content.
 
-I would rather state those limits plainly than hide them behind an alpha label. The open issues
-track the work needed to remove them.
+Read [reproducibility](docs/reproducibility.md), [privacy](docs/privacy.md), and
+[security policy](SECURITY.md) before sharing sensitive sessions.
+
+## Honest limitations
+
+Datary is not:
+
+- a spreadsheet application;
+- a replacement for statistical or domain expertise;
+- a cloud observability platform;
+- a guarantee that collected data is scientifically valid; or
+- a substitute for properly designed experiments.
+
+The alpha does not authenticate session authorship, automatically infer physical unit
+conversions, interpolate comparison series, or decide domain-specific thresholds. Plotting
+materializes the selected records for Matplotlib, so very large plots should be downsampled before
+rendering. JSON array decoding is incremental but one pending JSON value is capped at 16 MiB.
 
 ## Contributing and licence
 
-If the workflow sounds useful, I would be glad to have another set of eyes on it. Run `pytest`,
-`ruff check .`, and `mypy`, then see [CONTRIBUTING.md](CONTRIBUTING.md). Datary is MIT-licensed;
-copyright © 2026 devkyato.
+```bash
+python -m pytest
+python -m ruff check .
+python -m ruff format --check .
+python -m mypy
+python -m build
+```
+
+If the workflow sounds useful, I would be glad to have another set of eyes on it. Please include
+deterministic regression tests and explain the mathematical or security assumption behind a
+change. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+Datary is MIT-licensed; copyright © 2026 devkyato.

@@ -1,4 +1,5 @@
 """Write SHA-256 checksums for the current version's distribution artifacts."""
+
 import hashlib
 import re
 from pathlib import Path
@@ -19,15 +20,20 @@ def main() -> int:
     artifacts = [path for path in artifacts if path.is_file()]
     if not artifacts:
         raise FileNotFoundError(f"no distribution artifacts found for version {version}")
-    lines = [
-        f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}"
-        for path in artifacts
-    ]
+    lines = [f"{sha256_file(path)}  {path.name}" for path in artifacts]
     (distribution / "SHA256SUMS").write_text(
         "\n".join(lines) + "\n",
         encoding="utf-8",
     )
     return 0
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 if __name__ == "__main__":

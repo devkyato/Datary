@@ -1,40 +1,91 @@
 name: CI
+
 on:
   push:
   pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
+    name: Python ${{ matrix.python }} / Ubuntu
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
         python: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: {python-version: "${{ matrix.python }}"}
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: python -m pip install --upgrade pip
       - run: python -m pip install -e ".[dev]"
-      - run: pytest
-      - run: ruff check .
-      - run: mypy
+      - run: python -m pip check
+      - run: python -m pytest
+      - run: python -m ruff check .
+      - run: python -m ruff format --check .
+      - run: python -m mypy
       - run: python scripts/verify_reproducible.py
-      - run: datary generate noisy-sensor --seed 1 > sample.jsonl
+      - run: datary generate noisy-sensor --seed 1 --output sample.jsonl
       - run: datary record demo --format jsonl --time-field timestamp < sample.jsonl
-      - run: datary inspect demo
+      - run: datary inspect demo --quality
+      - run: datary inspect demo --plot value
       - run: datary report demo
+      - run: datary replay demo --no-timing > replay.jsonl
       - run: python -m build
-      - uses: actions/upload-artifact@v4
-        with: {name: "dist-${{ matrix.python }}", path: dist/*}
+      - run: python scripts/build_checksums.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: dist-${{ matrix.python }}
+          path: |
+            dist/*
+            demo/reports/*
+            demo/plots/*
+
+  platform-smoke:
+    name: Python ${{ matrix.python }} / ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+        python: ["3.9", "3.14"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: python -m pip install -e ".[dev]"
+      - run: python -m pytest
+      - run: datary --version
+      - run: datary generate sine --seed 1 --duration 1 --output sample.jsonl
+      - run: datary inspect sample.jsonl --format jsonl --time-field timestamp
+
   wheel-smoke:
+    name: Clean wheel installation
     needs: test
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: {python-version: "3.12"}
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
       - run: python -m pip install build
       - run: python -m build
       - run: python -m venv /tmp/datary-smoke
       - run: /tmp/datary-smoke/bin/pip install dist/*.whl
+      - run: /tmp/datary-smoke/bin/pip check
       - run: /tmp/datary-smoke/bin/datary --version
-
+      - run: /tmp/datary-smoke/bin/datary generate sine --duration 1 --output /tmp/sine.jsonl
+      - run: /tmp/datary-smoke/bin/datary inspect /tmp/sine.jsonl --format jsonl --time-field timestamp
