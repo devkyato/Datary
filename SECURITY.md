@@ -23,9 +23,11 @@ required.
 
 ## Reporting a vulnerability
 
-Report security problems privately to the repository owner. Do not attach confidential
-recordings. A minimal deterministic synthetic reproducer, affected version, operating system, and
-expected boundary are enough to begin investigation.
+Report security problems privately through
+[GitHub Security Advisories](https://github.com/devkyato/Datary/security/advisories/new)
+or the repository owner's private contact. Do not attach confidential recordings. A minimal
+deterministic synthetic reproducer, affected version, operating system, and expected boundary are
+enough to begin investigation.
 
 Users remain responsible for filesystem permissions, trusted installation sources, producer
 program safety, and privacy review before sharing sessions.
