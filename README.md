@@ -4,6 +4,7 @@
 
 [![CI](https://github.com/devkyato/Datary/actions/workflows/ci.yml/badge.svg)](https://github.com/devkyato/Datary/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/devkyato/Datary?include_prereleases)](https://github.com/devkyato/Datary/releases)
+[![Zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.21849618.svg)](https://zenodo.org/doi/10.5281/zenodo.21849618)
 [![Python](https://img.shields.io/badge/Python-3.9--3.14-3776AB.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -13,9 +14,8 @@ comparing, plotting, and documenting data emitted by programs and simulations.
 > Run a program, capture its output, validate the data, measure the behaviour, compare
 > experiments, and generate reproducible evidence.
 
-**Status:** `0.2.2` is an alpha. This release adds explicit plot downsampling metadata, moves the
-canonical repository path to `/Datary`, and keeps the session reader compatible with format 1;
-new recordings still use session format 2.
+**Status:** `0.2.3` is an alpha. This publication refreshes archival and citation metadata while
+keeping the session reader compatible with format 1; new recordings still use session format 2.
 
 ## Why I built it
 
@@ -37,7 +37,7 @@ Datary supports CPython 3.9–3.14. Core operation has no required runtime depen
 optional and uses the headless `Agg` backend.
 
 ```bash
-python -m pip install https://github.com/devkyato/Datary/releases/download/v0.2.2/datary_lab-0.2.2-py3-none-any.whl
+python -m pip install https://github.com/devkyato/Datary/releases/download/v0.2.3/datary_lab-0.2.3-py3-none-any.whl
 datary --version
 ```
 
@@ -272,6 +272,23 @@ The alpha does not authenticate session authorship, automatically infer physical
 conversions, interpolate comparison series, or decide domain-specific thresholds. Plotting can
 still materialize selected records for Matplotlib before downsampling to `--plot-max-points`.
 JSON array decoding is incremental but one pending JSON value is capped at 16 MiB.
+
+## Citation
+
+If you use this software in research or teaching, please cite the Zenodo archive / this repository:
+
+```text
+devkyato. (2026). Datary: local-first terminal laboratory for reproducible program and simulation evidence (Version 0.2.3). Zenodo. https://doi.org/10.5281/zenodo.21849618
+```
+
+See [CITATION.cff](CITATION.cff) for machine-readable metadata.
+
+## Applications
+
+- Recording and comparing numerical simulation runs.
+- Validating and plotting embedded-device telemetry.
+- Teaching reproducible data analysis in student laboratories.
+- Preserving evidence for coursework and local engineering experiments.
 
 ## Connected projects
 

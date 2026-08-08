@@ -1,0 +1,22 @@
+{
+  "creators": [{"name": "devkyato", "affiliation": "MATA Company"}],
+  "contributors": [{"name": "Cursor Agent", "type": "Other"}],
+  "title": "Datary: local-first terminal laboratory for reproducible program and simulation evidence",
+  "description": "Datary is a local-first terminal laboratory for recording, validating, analysing, replaying, comparing, plotting, and reporting evidence emitted by programs and simulations. It preserves original input alongside accepted and invalid records, documents assumptions and measurements, and keeps input inert rather than executing it. Usage: capture program output with datary record, inspect quality and metrics, compare experiments, produce plots and reports, then replay the retained session. Applications include simulation laboratories, embedded telemetry analysis, student labs, and reproducible coursework.",
+  "version": "0.2.3",
+  "keywords": ["datary", "reproducible research", "data analysis", "simulation", "CLI", "Python", "local-first", "plotting", "session recording", "research software"],
+  "license": "mit",
+  "upload_type": "software",
+  "access_right": "open",
+  "language": "eng",
+  "related_identifiers": [
+    {"identifier": "https://github.com/devkyato/Datary", "relation": "isSupplementTo", "resource_type": "software"},
+    {"identifier": "10.5281/zenodo.21849618", "relation": "isVersionOf", "scheme": "doi"},
+    {"identifier": "https://github.com/devkyato/OpenNet", "relation": "references", "resource_type": "software"},
+    {"identifier": "https://github.com/devkyato/TapAuth", "relation": "references", "resource_type": "software"},
+    {"identifier": "https://github.com/devkyato/Lowpack", "relation": "references", "resource_type": "software"},
+    {"identifier": "https://github.com/devkyato/Relay", "relation": "references", "resource_type": "software"},
+    {"identifier": "https://github.com/devkyato/Custom-Arduino-Libraries", "relation": "references", "resource_type": "software"},
+    {"identifier": "https://github.com/devkyato/Arduino-Programs-Guide", "relation": "references", "resource_type": "software"}
+  ]
+}

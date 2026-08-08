@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata from this file."
+title: "Datary: local-first terminal laboratory for reproducible program and simulation evidence"
+authors:
+  - family-names: devkyato
+    affiliation: "MATA Company"
+version: 0.2.3
+license: MIT
+repository-code: "https://github.com/devkyato/Datary"
+url: "https://github.com/devkyato/Datary"
+doi: 10.5281/zenodo.21849618
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.21849618
+abstract: "A local-first terminal laboratory for reproducible program and simulation evidence."
+keywords: [datary, reproducible research, data analysis, simulation, CLI, Python, local-first, plotting, session recording, research software]
+preferred-citation:
+  type: software
+  title: "Datary: local-first terminal laboratory for reproducible program and simulation evidence"
+  authors:
+    - family-names: devkyato
+      affiliation: "MATA Company"
+  version: 0.2.3
+  doi: 10.5281/zenodo.21849618

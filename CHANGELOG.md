@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.3 - 2026-08-09
+
+- Add Zenodo and Citation File Format metadata for archival citation.
+- Refresh public release references for the 0.2.3 publication.
+
 ## 0.2.2 - 2026-08-08
 
 Maintenance release focused on the public `/Datary` repository path and honest large-plot
