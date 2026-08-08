@@ -21,3 +21,14 @@ sequence, or formula-like export data.
 
 Please do not add telemetry, background networking, data execution, or an always-on database.
 Discuss session-format changes explicitly and keep older readers in mind.
+
+## Release checklist
+
+1. Bump `version` in `pyproject.toml` and `__version__` in `src/datary/__init__.py`.
+2. Update `CHANGELOG.md` and add `docs/releases/X.Y.Z.md`.
+3. Run the local checks above, then `python -m build` and `python scripts/build_checksums.py`.
+4. Publish GitHub Release `vX.Y.Z` with the wheel, sdist, and `SHA256SUMS`.
+5. Verify install from the release URL and `datary --version`.
+
+The distribution package name remains `datary-lab`; the canonical repository path is
+[`/Datary`](https://github.com/devkyato/Datary).

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any, Dict
 from urllib.parse import quote
@@ -15,24 +16,38 @@ from datary.utils import atomic_json, atomic_text, markdown_safe
 def report_data(session: Session) -> Dict[str, Any]:
     inspection = inspect_source(session)
     plots_directory = session.path / "plots"
-    plots = (
-        [
-            path.name
-            for path in sorted(plots_directory.iterdir(), key=lambda item: item.name)
-            if path.is_file() and not path.is_symlink() and path.suffix.lower() in {".png", ".svg"}
-        ]
-        if plots_directory.is_dir() and not plots_directory.is_symlink()
-        else []
-    )
+    plot_entries: list[Dict[str, Any]] = []
+    if plots_directory.is_dir() and not plots_directory.is_symlink():
+        for path in sorted(plots_directory.iterdir(), key=lambda item: item.name):
+            if not path.is_file() or path.is_symlink():
+                continue
+            if path.suffix.lower() not in {".png", ".svg"}:
+                continue
+            metadata_path = path.with_suffix(path.suffix + ".meta.json")
+            metadata: Dict[str, Any] = {}
+            if (
+                metadata_path.is_file()
+                and not metadata_path.is_symlink()
+                and metadata_path.stat().st_size <= 1_048_576
+            ):
+                try:
+                    loaded = json.loads(metadata_path.read_text(encoding="utf-8"))
+                except (OSError, json.JSONDecodeError):
+                    loaded = {}
+                if isinstance(loaded, dict):
+                    metadata = loaded
+            plot_entries.append({"filename": path.name, "metadata": metadata})
     return {
         "datary_version": __version__,
         "session": session.manifest,
         "inspection": inspection.to_dict(),
         "integrity_errors": session.verify(),
-        "plots": plots,
+        "plots": [entry["filename"] for entry in plot_entries],
+        "plot_details": plot_entries,
         "warnings_and_assumptions": [
             "Statistics describe recorded data; they do not establish scientific validity.",
             "Quality checks are heuristics and require domain review.",
+            "Plot downsampling preserves declared extrema but is visual evidence, not a new recording.",
         ],
     }
 
@@ -159,9 +174,26 @@ def _markdown(data: Dict[str, Any]) -> str:
     lines += ["", "## Warnings and assumptions", ""]
     lines.extend(f"- {_md(item)}" for item in data["warnings_and_assumptions"])
     lines += ["", "## Plots", ""]
-    if data["plots"]:
-        for filename in data["plots"]:
+    plot_details = data.get("plot_details") or []
+    if plot_details:
+        for entry in plot_details:
+            filename = entry["filename"]
             lines.append(f"- [{_md(str(filename))}](../plots/{quote(str(filename))})")
+            metadata = entry.get("metadata") or {}
+            downsample = metadata.get("downsample") or {}
+            if downsample:
+                lines.append(
+                    "  - Downsample: "
+                    f"algorithm={_code(downsample.get('algorithm'))}; "
+                    f"applied={_code(downsample.get('applied'))}; "
+                    f"original={_code(downsample.get('original_point_count'))}; "
+                    f"plotted={_code(downsample.get('plotted_point_count'))}; "
+                    f"max_points={_code(downsample.get('max_points'))}; "
+                    f"preserved_extrema={_code(downsample.get('preserved_global_extrema'))}"
+                )
+                parameters = downsample.get("parameters") or {}
+                if parameters.get("bucket_policy"):
+                    lines.append(f"  - Policy: {_md(str(parameters['bucket_policy']))}")
     else:
         lines.append("No plots have been generated for this session.")
     lines.append("")

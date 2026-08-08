@@ -13,13 +13,15 @@ datary generate motor-speed --seed 4 --duration 10 |
   datary record motor --format jsonl --time-field timestamp \
     --target-field target_rpm --response-field speed_rpm --unit speed_rpm=rpm
 datary inspect motor --quality --plot speed_rpm,current_a --plot-kind line
+datary inspect motor --plot speed_rpm --plot-max-points 500
 datary report motor
 ```
 
 The pipe sends one JSON object at a time into `datary record`. Datary preserves those lines in
 `raw.log`, writes accepted objects to `records.jsonl`, calculates metrics and quality findings, and
 then finalizes the session. `inspect` reads that evidence back; `report` turns it into a local
-Markdown narrative.
+Markdown narrative. Large plots downsample for display only and leave a `.meta.json` sidecar that
+records the algorithm and point counts.
 
 ## Network comparison
 

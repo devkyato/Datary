@@ -15,7 +15,7 @@ from typing import IO, Any, Dict, List, Optional, Sequence
 
 from datary import __version__
 from datary.comparison import compare_sessions
-from datary.config import default_workspace
+from datary.config import DEFAULT_PLOT_MAX_POINTS, default_workspace
 from datary.conversion import convert_source
 from datary.formats import SUPPORTED_FORMATS
 from datary.generators import PROFILES, generate_records
@@ -95,6 +95,15 @@ def parser() -> argparse.ArgumentParser:
         "--plot-kind",
         choices=("line", "scatter", "step", "histogram"),
         default="line",
+    )
+    inspect.add_argument(
+        "--plot-max-points",
+        type=int,
+        default=None,
+        help=(
+            "maximum plotted points per field before extrema-preserving downsampling "
+            f"(default {DEFAULT_PLOT_MAX_POINTS})"
+        ),
     )
     inspect.add_argument("--overwrite-plot", action="store_true")
     inspect.add_argument("--json", action="store_true")
@@ -223,15 +232,28 @@ def _dispatch(args: argparse.Namespace) -> int:
                 plot_root,
                 Path(f"{filename}.{args.plot_format}"),
             )
-            create_plot(
+            max_points = (
+                DEFAULT_PLOT_MAX_POINTS if args.plot_max_points is None else args.plot_max_points
+            )
+            plot = create_plot(
                 records,
                 fields,
                 output,
                 time_field=args.time_field or manifest_time,
                 kind=args.plot_kind,
                 overwrite=args.overwrite_plot,
+                max_points=max_points,
             )
-            print(f"Plot: {terminal_safe(output)}")
+            print(f"Plot: {terminal_safe(plot.path)}")
+            info = plot.downsample
+            print(
+                "Plot downsample: "
+                f"algorithm={info.algorithm} applied={info.applied} "
+                f"original={info.original_point_count} plotted={info.plotted_point_count} "
+                f"max_points={info.max_points} "
+                f"preserved_extrema={info.preserved_global_extrema}"
+            )
+            print(f"Plot metadata: {terminal_safe(plot.metadata_path)}")
     elif args.command == "compare":
         result = compare_sessions(
             [_resolve(source, workspace) for source in args.sources], args.field, args.goal

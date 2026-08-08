@@ -33,7 +33,30 @@ def test_markdown_escapes_html_and_displays_integrity_failures(tmp_path: Path) -
     assert "hash mismatch" in text
 
 
-def test_report_contains_engineering_metrics(tmp_path: Path) -> None:
+def test_report_includes_plot_downsample_metadata(tmp_path: Path) -> None:
+    from datary.plotting import create_plot
+
+    session = Session.open(
+        record_stream(
+            io.StringIO("".join(f'{{"t":{index},"x":{index}}}\n' for index in range(200))),
+            RecordOptions("plot-meta", tmp_path, "jsonl", time_field="t"),
+        )
+    )
+    create_plot(
+        list(session.records()),
+        ["x"],
+        session.path / "plots" / "plot-x.png",
+        time_field="t",
+        max_points=40,
+    )
+    text = write_report(session, tmp_path / "plot-report.md").read_text(encoding="utf-8")
+    assert "Downsample:" in text
+    assert "extrema-preserving-buckets" in text
+    payload = json.loads(
+        write_report(session, tmp_path / "plot-report.json", "json").read_text(encoding="utf-8")
+    )
+    assert payload["plot_details"][0]["metadata"]["downsample"]["applied"] is True
+
     session = Session.open(
         record_stream(
             io.StringIO('{"t":0,"target":1,"response":0}\n{"t":1,"target":1,"response":1}\n'),
