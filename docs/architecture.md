@@ -50,3 +50,5 @@ If publication fails, the backup is restored. Critical streams flush and `fsync`
 Critical JSON and text outputs use same-directory temporary files and atomic replacement.
 
 Core operation uses only the standard library. Matplotlib is imported lazily after forcing `Agg`.
+Plot generation may downsample series for display; downsample parameters are written beside the
+image and never rewrite published records.

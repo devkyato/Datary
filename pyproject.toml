@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "datary-lab"
-version = "0.2.1"
+version = "0.2.2"
 description = "A local-first terminal laboratory for reproducible program data."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -29,10 +29,10 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/devkyato/datary-lab"
-Documentation = "https://github.com/devkyato/datary-lab#readme"
-Issues = "https://github.com/devkyato/datary-lab/issues"
-Changelog = "https://github.com/devkyato/datary-lab/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/devkyato/Datary"
+Documentation = "https://github.com/devkyato/Datary#readme"
+Issues = "https://github.com/devkyato/Datary/issues"
+Changelog = "https://github.com/devkyato/Datary/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 plot = ["matplotlib>=3.7"]

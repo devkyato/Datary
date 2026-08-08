@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.2 - 2026-08-08
+
+Maintenance release focused on the public `/Datary` repository path and honest large-plot
+handling.
+
+- Point badges, package metadata, issue templates, and install links at
+  `https://github.com/devkyato/Datary`.
+- Add extrema-preserving plot downsampling with `--plot-max-points` (default 5000).
+- Persist plot downsample metadata beside each PNG/SVG and surface it in CLI output and reports.
+- Document the connected local-first and hardware projects maintained alongside Datary.
+
 ## 0.2.1 - 2026-07-29
 
 Oh! The final post-publication check caught a platform detail worth fixing immediately: Git

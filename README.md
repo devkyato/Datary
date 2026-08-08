@@ -2,8 +2,8 @@
 
 # Datary
 
-[![CI](https://github.com/devkyato/datary-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/devkyato/datary-lab/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/devkyato/datary-lab?include_prereleases)](https://github.com/devkyato/datary-lab/releases)
+[![CI](https://github.com/devkyato/Datary/actions/workflows/ci.yml/badge.svg)](https://github.com/devkyato/Datary/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/devkyato/Datary?include_prereleases)](https://github.com/devkyato/Datary/releases)
 [![Python](https://img.shields.io/badge/Python-3.9--3.14-3776AB.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -13,9 +13,9 @@ comparing, plotting, and documenting data emitted by programs and simulations.
 > Run a program, capture its output, validate the data, measure the behaviour, compare
 > experiments, and generate reproducible evidence.
 
-**Status:** `0.2.1` is an alpha. This release concentrates on analytical correctness, safe
-publication, bounded-memory analysis, and adversarial input handling. The session reader remains
-compatible with format 1; new recordings use session format 2.
+**Status:** `0.2.2` is an alpha. This release adds explicit plot downsampling metadata, moves the
+canonical repository path to `/Datary`, and keeps the session reader compatible with format 1;
+new recordings still use session format 2.
 
 ## Why I built it
 
@@ -37,7 +37,7 @@ Datary supports CPython 3.9–3.14. Core operation has no required runtime depen
 optional and uses the headless `Agg` backend.
 
 ```bash
-python -m pip install https://github.com/devkyato/datary-lab/releases/download/v0.2.1/datary_lab-0.2.1-py3-none-any.whl
+python -m pip install https://github.com/devkyato/Datary/releases/download/v0.2.2/datary_lab-0.2.2-py3-none-any.whl
 datary --version
 ```
 
@@ -143,6 +143,12 @@ field names, not only record length.
 Plots support PNG and SVG line, scatter, step, and histogram output, with missing-data markers
 where an x-position is available. User field names are sanitized before becoming filenames, plot
 directories may not be symlinks, and existing plots require `--overwrite-plot`.
+
+Very large plots use an explicit extrema-preserving bucket downsampler controlled by
+`--plot-max-points` (default 5000). Canonical records are unchanged. Each plot writes a sibling
+`.meta.json` file that records the algorithm, parameters, original point count, plotted point
+count, missing-marker count, and whether global extrema were preserved. Inspection and reports
+surface that metadata.
 
 ## Metrics and engineering roles
 
@@ -263,9 +269,23 @@ Datary is not:
 - a substitute for properly designed experiments.
 
 The alpha does not authenticate session authorship, automatically infer physical unit
-conversions, interpolate comparison series, or decide domain-specific thresholds. Plotting
-materializes the selected records for Matplotlib, so very large plots should be downsampled before
-rendering. JSON array decoding is incremental but one pending JSON value is capped at 16 MiB.
+conversions, interpolate comparison series, or decide domain-specific thresholds. Plotting can
+still materialize selected records for Matplotlib before downsampling to `--plot-max-points`.
+JSON array decoding is incremental but one pending JSON value is capped at 16 MiB.
+
+## Connected projects
+
+These repositories form the surrounding toolkit I maintain alongside Datary:
+
+| Project | Role |
+| --- | --- |
+| **[Datary](https://github.com/devkyato/Datary)** | Local-first terminal laboratory for reproducible program and simulation evidence |
+| **[Lowpack](https://github.com/devkyato/Lowpack)** | Local-first, application-aware lossless packing |
+| **[Relay](https://github.com/devkyato/Relay)** | Local-first timing-risk source review for control programs |
+| **[OpenNet](https://github.com/devkyato/OpenNet)** | Typed ONP/1 messaging for ESP32, Raspberry Pi, and backends |
+| **[TapAuth](https://github.com/devkyato/TapAuth)** | Raspberry Pi NFC attendance and reservation kiosk |
+| **[Custom Arduino Libraries](https://github.com/devkyato/Custom-Arduino-Libraries)** | Non-blocking LED and digital-output patterns |
+| **[Arduino Programs Guide](https://github.com/devkyato/Arduino-Programs-Guide)** | Safety-first, compile-checked Arduino Uno course |
 
 ## Contributing and licence
 
