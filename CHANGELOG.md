@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.2.4 - 2026-08-09
+
+Publication and documentation quality release; runtime behaviour is unchanged.
+
+- Replace the plain Zenodo summary with sanitizer-safe, structured HTML covering installation,
+  use, applications, limitations, documentation, related software, and citation.
+- Expand Citation File Format metadata and consistently identify the creator as
+  `@dev.mako (devkyato)` of MATA Company.
+- Synchronize package, runtime, archival, citation, README, and release-note versions.
+- Add a documentation index and clearer README output, security, limitation, and connected-project
+  guidance.
+- Regenerate the deterministic noisy-sensor example with 0.2.4 metadata and valid integrity
+  hashes.
+
 ## 0.2.3 - 2026-08-09
 
 - Add Zenodo and Citation File Format metadata for archival citation.

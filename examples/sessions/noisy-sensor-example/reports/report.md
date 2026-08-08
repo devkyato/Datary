@@ -1,16 +1,16 @@
 # Datary report: noisy\-sensor\-example
 
-- Datary version: `0.2.1`
-- Recorded with Datary: `0.2.1`
+- Datary version: `0.2.4`
+- Recorded with Datary: `0.2.4`
 - Session format: `2`
-- Started: `2026-07-29T21:56:32.283095+08:00`
-- Ended: `2026-07-29T21:56:32.337172+08:00`
+- Started: `2026-08-09T01:07:55.640448+08:00`
+- Ended: `2026-08-09T01:07:55.688832+08:00`
 - Input format: `jsonl`
 - Records: 101 valid, 0 invalid
 
 ## Reproduction
 
-- Original command: `not supplied`
+- Original command: `datary generate noisy-sensor --seed 1`
 - Working directory: `<redacted>`
 - Command context: Run from the session parent directory or set DATARY\_WORKSPACE to that directory\.
 - compare: `datary compare noisy-sensor-example OTHER`
@@ -81,7 +81,10 @@ These checks detect accidental changes; they do not prove cryptographic authenti
 
 - Statistics describe recorded data; they do not establish scientific validity\.
 - Quality checks are heuristics and require domain review\.
+- Plot downsampling preserves declared extrema but is visual evidence, not a new recording\.
 
 ## Plots
 
 - [plot\-value\.png](../plots/plot-value.png)
+  - Downsample: algorithm=`extrema-preserving-buckets`; applied=`False`; original=`101`; plotted=`101`; max_points=`5000`; preserved_extrema=`True`
+  - Policy: keep first, last, local min, and local max per bucket

@@ -14,8 +14,9 @@ comparing, plotting, and documenting data emitted by programs and simulations.
 > Run a program, capture its output, validate the data, measure the behaviour, compare
 > experiments, and generate reproducible evidence.
 
-**Status:** `0.2.3` is an alpha. This publication refreshes archival and citation metadata while
-keeping the session reader compatible with format 1; new recordings still use session format 2.
+**Status:** `0.2.4` is an alpha. This release improves publication, documentation, and citation
+quality without claiming new runtime behaviour. The session reader remains compatible with
+format 1; new recordings still use session format 2.
 
 ## Why I built it
 
@@ -37,7 +38,7 @@ Datary supports CPython 3.9–3.14. Core operation has no required runtime depen
 optional and uses the headless `Agg` backend.
 
 ```bash
-python -m pip install https://github.com/devkyato/Datary/releases/download/v0.2.3/datary_lab-0.2.3-py3-none-any.whl
+python -m pip install https://github.com/devkyato/Datary/releases/download/v0.2.4/datary_lab-0.2.4-py3-none-any.whl
 datary --version
 ```
 
@@ -67,6 +68,17 @@ datary inspect demo --plot value
 datary report demo
 datary replay demo --no-timing
 datary compare demo demo --field value
+```
+
+The deterministic `inspect` step reports the source, accepted records, numerical range, timing,
+and quality count. Rounded values from the seed-1 demonstration look like:
+
+```text
+Source: .../demo (jsonl)
+Records: 101 valid, 0 invalid
+timestamp: number min=0 mean=5 max=10
+value: number min=18.9449 mean=20.1777 max=21.1111
+Quality findings: 0
 ```
 
 Set `DATARY_WORKSPACE` or pass `--workspace PATH` before the subcommand. Nothing is uploaded,
@@ -258,6 +270,12 @@ locations; terminal and Markdown output escape untrusted control or markup conte
 Read [reproducibility](docs/reproducibility.md), [privacy](docs/privacy.md), and
 [security policy](SECURITY.md) before sharing sensitive sessions.
 
+## Documentation index
+
+Use the [documentation index](docs/README.md) to find the tutorial, supported input formats,
+session-format contract, metric definitions, quality checks, architecture, reproducibility,
+privacy, and release notes.
+
 ## Honest limitations
 
 Datary is not:
@@ -278,7 +296,7 @@ JSON array decoding is incremental but one pending JSON value is capped at 16 Mi
 If you use this software in research or teaching, please cite the Zenodo archive / this repository:
 
 ```text
-devkyato. (2026). Datary: local-first terminal laboratory for reproducible program and simulation evidence (Version 0.2.3). Zenodo. https://doi.org/10.5281/zenodo.21849618
+@dev.mako (devkyato). (2026). Datary: local-first terminal laboratory for reproducible program and simulation evidence (Version 0.2.4). Zenodo. https://doi.org/10.5281/zenodo.21849618
 ```
 
 See [CITATION.cff](CITATION.cff) for machine-readable metadata.
@@ -296,7 +314,6 @@ These repositories form the surrounding toolkit I maintain alongside Datary:
 
 | Project | Role |
 | --- | --- |
-| **[Datary](https://github.com/devkyato/Datary)** | Local-first terminal laboratory for reproducible program and simulation evidence |
 | **[Lowpack](https://github.com/devkyato/Lowpack)** | Local-first, application-aware lossless packing |
 | **[Relay](https://github.com/devkyato/Relay)** | Local-first timing-risk source review for control programs |
 | **[OpenNet](https://github.com/devkyato/OpenNet)** | Typed ONP/1 messaging for ESP32, Raspberry Pi, and backends |

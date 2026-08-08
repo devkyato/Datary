@@ -1,0 +1,34 @@
+{
+  "downsample": {
+    "algorithm": "extrema-preserving-buckets",
+    "applied": false,
+    "max_points": 5000,
+    "missing_marker_count": 0,
+    "original_point_count": 101,
+    "parameters": {
+      "bucket_policy": "keep first, last, local min, and local max per bucket",
+      "fields": [
+        {
+          "field": "value",
+          "global_maximum": 21.111120412614504,
+          "global_minimum": 18.94492804097838,
+          "missing_marker_count": 0,
+          "original_missing_marker_count": 0,
+          "original_point_count": 101,
+          "plotted_point_count": 101,
+          "preserved_global_extrema": true
+        }
+      ],
+      "kind": "line"
+    },
+    "plotted_point_count": 101,
+    "preserved_global_extrema": true
+  },
+  "fields": [
+    "value"
+  ],
+  "kind": "line",
+  "metadata_path": "C:\\Users\\kyama\\Desktop\\Projects\\datary\\examples\\sessions\\noisy-sensor-example\\plots\\plot-value.png.meta.json",
+  "path": "C:\\Users\\kyama\\Desktop\\Projects\\datary\\examples\\sessions\\noisy-sensor-example\\plots\\plot-value.png",
+  "time_field": "timestamp"
+}

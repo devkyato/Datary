@@ -6,8 +6,8 @@
     "replay": "datary replay noisy-sensor-example",
     "report": "datary report noisy-sensor-example"
   },
-  "datary_version": "0.2.1",
-  "ended_at": "2026-07-29T21:56:32.337172+08:00",
+  "datary_version": "0.2.4",
+  "ended_at": "2026-08-09T01:07:55.688832+08:00",
   "field_roles": {},
   "fields": {
     "timestamp": "number",
@@ -26,7 +26,7 @@
   "integrity_scope": "SHA-256 corruption detection for manifest and listed artifacts; not cryptographic authenticity",
   "interrupted": false,
   "invalid_record_count": 0,
-  "original_command": null,
+  "original_command": "datary generate noisy-sensor --seed 1",
   "parameters": {},
   "parser_policy": "conservative-scalars-v1",
   "parser_warnings": [],
@@ -47,7 +47,7 @@
   },
   "session_format_version": "2",
   "session_name": "noisy-sensor-example",
-  "started_at": "2026-07-29T21:56:32.283095+08:00",
+  "started_at": "2026-08-09T01:07:55.640448+08:00",
   "time_field": "timestamp",
   "units": {},
   "valid_record_count": 101,

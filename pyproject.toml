@@ -4,13 +4,22 @@ build-backend = "hatchling.build"
 
 [project]
 name = "datary-lab"
-version = "0.2.3"
+version = "0.2.4"
 description = "A local-first terminal laboratory for reproducible program data."
 readme = "README.md"
 requires-python = ">=3.9"
 license = {file = "LICENSE"}
-authors = [{name = "devkyato"}]
-keywords = ["data", "terminal", "experiments", "reproducibility"]
+authors = [{name = "@dev.mako (devkyato)"}]
+keywords = [
+  "data-provenance",
+  "data-quality",
+  "local-first",
+  "reproducible-research",
+  "research-software",
+  "session-recording",
+  "simulation",
+  "telemetry",
+]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Environment :: Console",

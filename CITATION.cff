@@ -2,9 +2,10 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it using the metadata from this file."
 title: "Datary: local-first terminal laboratory for reproducible program and simulation evidence"
 authors:
-  - family-names: devkyato
+  - family-names: "@dev.mako (devkyato)"
     affiliation: "MATA Company"
-version: 0.2.3
+version: 0.2.4
+date-released: 2026-08-09
 license: MIT
 repository-code: "https://github.com/devkyato/Datary"
 url: "https://github.com/devkyato/Datary"
@@ -12,13 +13,34 @@ doi: 10.5281/zenodo.21849618
 identifiers:
   - type: doi
     value: 10.5281/zenodo.21849618
-abstract: "A local-first terminal laboratory for reproducible program and simulation evidence."
-keywords: [datary, reproducible research, data analysis, simulation, CLI, Python, local-first, plotting, session recording, research software]
+abstract: >-
+  Datary is a local-first terminal laboratory for preserving reproducible evidence from programs
+  and simulations. It records original input alongside accepted and rejected records, calculates
+  deterministic metrics and heuristic quality findings, compares experiments without silently
+  resampling them, and produces plots, replay streams, and Markdown or JSON reports. Input remains
+  inert, paths and output are hardened, and session manifests document assumptions and SHA-256
+  corruption checks. Datary is alpha research software: it supports investigation and teaching,
+  but does not authenticate authorship or establish scientific validity.
+keywords:
+  - datary
+  - reproducible research
+  - research software
+  - data provenance
+  - data quality
+  - simulation
+  - telemetry
+  - command-line interface
+  - Python
+  - local-first
+  - plotting
+  - session recording
 preferred-citation:
   type: software
   title: "Datary: local-first terminal laboratory for reproducible program and simulation evidence"
   authors:
-    - family-names: devkyato
+    - family-names: "@dev.mako (devkyato)"
       affiliation: "MATA Company"
-  version: 0.2.3
+  version: 0.2.4
+  date-released: 2026-08-09
+  repository-code: "https://github.com/devkyato/Datary"
   doi: 10.5281/zenodo.21849618
