@@ -38,6 +38,22 @@ def test_quality_field_options_are_repeatable() -> None:
     assert arguments.counter_field == ["packets"]
 
 
+def test_overwrite_conflict_mentions_flag(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    output = tmp_path / "data.jsonl"
+    assert main(["generate", "sine", "--duration", "1", "--output", str(output)]) == 0
+    assert main(["generate", "sine", "--duration", "1", "--output", str(output)]) == 2
+    message = capsys.readouterr().err
+    assert "path already exists" in message
+    assert "--overwrite" in message
+
+
+def test_compare_requires_two_sources(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["compare", "only-one"]) == 2
+    assert "at least two sources" in capsys.readouterr().err
+
+
 def test_doctor_treats_plotting_as_optional(
     tmp_path: Path, capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
 ) -> None:

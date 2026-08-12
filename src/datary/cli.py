@@ -165,6 +165,14 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     except KeyboardInterrupt:
         print("datary: interrupted", file=sys.stderr)
         return 130
+    except FileExistsError as error:
+        target = terminal_safe(error)
+        print(
+            f"datary: error: path already exists: {target} "
+            "(pass --overwrite to replace it)",
+            file=sys.stderr,
+        )
+        return 2
     except (OSError, ValueError, json.JSONDecodeError, ImportError) as error:
         print(f"datary: error: {terminal_safe(error)}", file=sys.stderr)
         return 2
@@ -255,6 +263,8 @@ def _dispatch(args: argparse.Namespace) -> int:
             )
             print(f"Plot metadata: {terminal_safe(plot.metadata_path)}")
     elif args.command == "compare":
+        if len(args.sources) < 2:
+            raise ValueError("compare requires at least two sources")
         result = compare_sessions(
             [_resolve(source, workspace) for source in args.sources], args.field, args.goal
         )

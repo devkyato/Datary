@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Clarify overwrite conflicts with an explicit `--overwrite` hint.
+- Reject `compare` invocations that provide fewer than two sources at the CLI.
+- Update the bug-report version placeholder to 0.2.4.
+
 ## 0.2.4 - 2026-08-09
 
 Publication and documentation quality release; runtime behaviour is unchanged.
