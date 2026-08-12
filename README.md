@@ -14,8 +14,7 @@ comparing, plotting, and documenting data emitted by programs and simulations.
 > Run a program, capture its output, validate the data, measure the behaviour, compare
 > experiments, and generate reproducible evidence.
 
-**Status:** `0.2.4` is an alpha. This release improves publication, documentation, and citation
-quality without claiming new runtime behaviour. The session reader remains compatible with
+**Status:** `0.2.5` is an alpha. This release clarifies CLI overwrite and compare error messaging. The session reader remains compatible with
 format 1; new recordings still use session format 2.
 
 ## Why I built it
@@ -38,7 +37,7 @@ Datary supports CPython 3.9–3.14. Core operation has no required runtime depen
 optional and uses the headless `Agg` backend.
 
 ```bash
-python -m pip install https://github.com/devkyato/Datary/releases/download/v0.2.4/datary_lab-0.2.4-py3-none-any.whl
+python -m pip install https://github.com/devkyato/Datary/releases/download/v0.2.5/datary_lab-0.2.5-py3-none-any.whl
 datary --version
 ```
 
@@ -296,7 +295,7 @@ JSON array decoding is incremental but one pending JSON value is capped at 16 Mi
 If you use this software in research or teaching, please cite the Zenodo archive / this repository:
 
 ```text
-@dev.mako (devkyato). (2026). Datary: local-first terminal laboratory for reproducible program and simulation evidence (Version 0.2.4). Zenodo. https://doi.org/10.5281/zenodo.21849618
+@dev.mako (devkyato). (2026). Datary: local-first terminal laboratory for reproducible program and simulation evidence (Version 0.2.5). Zenodo. https://doi.org/10.5281/zenodo.21849618
 ```
 
 See [CITATION.cff](CITATION.cff) for machine-readable metadata.

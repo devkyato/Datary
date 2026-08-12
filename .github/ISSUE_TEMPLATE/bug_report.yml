@@ -11,7 +11,7 @@ body:
     id: version
     attributes:
       label: Datary version
-      placeholder: datary 0.2.4
+      placeholder: datary 0.2.5
     validations:
       required: true
   - type: dropdown

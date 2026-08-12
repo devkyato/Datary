@@ -4,8 +4,8 @@ title: "Datary: local-first terminal laboratory for reproducible program and sim
 authors:
   - family-names: "@dev.mako (devkyato)"
     affiliation: "MATA Company"
-version: 0.2.4
-date-released: 2026-08-09
+version: 0.2.5
+date-released: 2026-08-12
 license: MIT
 repository-code: "https://github.com/devkyato/Datary"
 url: "https://github.com/devkyato/Datary"
@@ -40,7 +40,7 @@ preferred-citation:
   authors:
     - family-names: "@dev.mako (devkyato)"
       affiliation: "MATA Company"
-  version: 0.2.4
-  date-released: 2026-08-09
+  version: 0.2.5
+  date-released: 2026-08-12
   repository-code: "https://github.com/devkyato/Datary"
   doi: 10.5281/zenodo.21849618

@@ -25,6 +25,7 @@ interpreting a result.
 
 ## Releases
 
+- [Datary 0.2.5](releases/0.2.5.md) - CLI overwrite and compare messaging.
 - [Datary 0.2.4](releases/0.2.4.md) — publication and documentation overhaul.
 - [Datary 0.2.3](releases/0.2.3.md) — initial citation and archival metadata.
 - [Datary 0.2.2](releases/0.2.2.md) — repository and large-plot maintenance.
